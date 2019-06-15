@@ -7,7 +7,7 @@ const HTMLPageGenerator = require('./services/HTMLPageGenerator');
 const Toolbox = require('./services/Toolbox');
 const EmailService = require('./services/EmailService');
 const MP3Encoder = require('./services/MP3Encoder');
-const cliProgress = require('cli-progress');
+const ProgressLogger = require('./services/ProgressLogger');
 
 const Student = require('./models/Student');
 const Song = require('./models/Song');
@@ -30,7 +30,6 @@ class MusicUploader {
     this.S3FileUploader = new S3FileUploader(bucketName, AWSConfigPath);
     this.emailRetriever = new EmailRetriever(emailsDataPath);
     this.HTMLPageGenerator = new HTMLPageGenerator(htmlTemplatePath, htmlStorePath); 
-    this.totalConversionProgress = [];
   }
 
   addSongToStudent (song) {
@@ -83,33 +82,19 @@ class MusicUploader {
 
   _convertSongs() {
     if (this.songs.length > 0) {
-      const conversionProgressBar = new cliProgress.Bar({}, cliProgress.Presets.shades_classic);
-      conversionProgressBar.start(100, 0);
-      return Promise.map(this.songs, (song) => {
+      const conversionProgressLogger = new ProgressLogger(this.songs, {
+        startLog: '--- Converting .WAV songs into .mp3 ---', 
+        endLog: '--- All .WAV songs have been converted to .mp3 ---'
+      })
+      return Promise.map(this.songs, (song, index) => {
         return this.MP3Encoder.convertWavToMp3(song, (progress) => {
-          this._updateConversionProgress(song, progress, conversionProgressBar);
+          conversionProgressLogger.updateProgress(index, progress);
         });
       }).then(() => {
-        conversionProgressBar.stop();
-        console.log('--- All songs have been converted ---');
+        conversionProgressLogger.endProgress();
       })
     }
     return Promise.reject(new Error("There are no songs to convert in the songs object!"));
-  }
-
-  _initiateConversionProgress() {
-    this.songs.forEach((song) => {
-      this.totalConversionProgress[song.uuid] = 0;
-    });
-  }
-
-  _updateConversionProgress(song, progress, progressBar) {
-    this.totalConversionProgress[song.uuid] = progress;
-    const totalProgress = (Object.keys(this.totalConversionProgress).reduce((acc, key) => {
-      acc += this.totalConversionProgress[key];
-      return acc;
-    }, 0) / this.songs.length);
-    progressBar.update(totalProgress);
   }
 
   _createHTMLPages() {
@@ -133,7 +118,7 @@ class MusicUploader {
     })
   }
 
-  createDataFromMusicFiles () {
+  run () {
     return fse.readdir(wavFilesPath)
       .then((items) => {
         return this._createSongs(items);
@@ -150,20 +135,20 @@ class MusicUploader {
       .then(() => {
         return this._createHTMLPages();
       })
-      // .then(() => {
-      //   return this._uploadFilesToS3();
-      // })
-      // .then(() => {
-      //   return this.emailRetriever.addEmailsToStudents(this.students);
-      // })
-      // .then(() => {
-      //   return Promise.map(this.students, (student) => {
-      //     this.emailService.sendEmail(student);
-      //   })
-      // });
+      .then(() => {
+        return this._uploadFilesToS3();
+      })
+      .then(() => {
+        return this.emailRetriever.addEmailsToStudents(this.students);
+      })
+      .then(() => {
+        return Promise.map(this.students, (student) => {
+          this.emailService.sendEmail(student);
+        })
+      });
   }
 }
 
 const MyMusicUploader = new MusicUploader();
 
-MyMusicUploader.createDataFromMusicFiles().then(() => {})
+MyMusicUploader.run();

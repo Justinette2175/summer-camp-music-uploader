@@ -1,5 +1,4 @@
 const Lame = require("node-lame").Lame;
-
 class MP3Encoder {
   constructor(wavPath, mp3Path) {
     this.wavPath = wavPath;
@@ -7,15 +6,19 @@ class MP3Encoder {
   }
 
   convertWavToMp3(song, cb) {
+    const meta = song.metadata;
     const encoder = new Lame({
-        output: `${this.mp3Path}/${song.hashedmp3SongName}`,
-        bitrate: 192
+      output: `${this.mp3Path}/${song.hashedmp3SongName}`,
+      bitrate: 192, 
+      meta,
     }).setFile(`${this.wavPath}/${song.fileName}`);
     const emitter = encoder.getEmitter();
     emitter.on("progress", ([progress, eta]) => {
       cb(progress);
     });
-    return encoder.encode();
+    return encoder.encode().catch(error => {
+      console.log(error);
+  });
   }
 }
 

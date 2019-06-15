@@ -35,6 +35,16 @@ class Song {
     return Toolbox.getStudentNamesFromTitle(this.title);
   }
 
+  get metadata() {
+    return {
+      title: this.title, 
+      artist: "Camp Père-Lindsay", 
+      album: "Camp Père-Lindsay 2019", 
+      year: "2019",
+      artwork: "./cover.jpeg",
+    }
+  }
+
   songIsGlobal() {
     return this.students[0] === '*';
   }

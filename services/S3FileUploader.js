@@ -12,7 +12,7 @@ class S3FileUploader {
   _getContentTypeMetadata(contentType) {
     switch (contentType) {
       case 'html': 
-        return 'application/shtml'
+        return 'text/html'
       default: 
         return 'application/octet-stream'
     }
@@ -26,9 +26,7 @@ class S3FileUploader {
           Bucket: this.bucketName,
           Key: key,
           Body: base64data,
-          Metadata: {
-            'Content-Type': this._getContentTypeMetadata(contentType)
-          }
+          'ContentType': this._getContentTypeMetadata(contentType),
         }
         this.s3.putObject(params, (err, data) => {
           if (err) console.error(`Upload Error ${err}`)
