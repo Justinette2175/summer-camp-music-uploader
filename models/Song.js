@@ -3,7 +3,7 @@ const Toolbox = require('../services/Toolbox');
 // Class for the song. Contains _title, _mp3Title, _wavTitle, _hashedTitle;
 class Song {
   constructor(fileName) {
-    this._uuid = Toolbox.generateUuid();
+    this._uuid = Toolbox.generateUuid(fileName);
     this._fileName = fileName;
   }
 

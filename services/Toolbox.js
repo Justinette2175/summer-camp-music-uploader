@@ -1,4 +1,5 @@
-const uuid = require('uuidv4');
+var sha1 = require('sha1');
+const { salt } = require('../config.json');
 
 class Toolbox {
   getStudentNamesFromTitle(title) {
@@ -10,8 +11,8 @@ class Toolbox {
     return fileName.split('.')[0]
   }
 
-  generateUuid() {
-    return uuid();
+  generateUuid(fileName) {
+    return sha1(`${salt}${fileName}`);
   }
 }
 

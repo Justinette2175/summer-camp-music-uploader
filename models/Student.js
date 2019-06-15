@@ -4,7 +4,7 @@ class Student {
   constructor(name) {
     this._name = name;
     this._songs = [];
-    this._htmlPageName = Toolbox.generateUuid() + '.html';
+    this._htmlPageName = Toolbox.generateUuid(name) + '.html';
   }
 
   addSongToStudentSongs(song) {

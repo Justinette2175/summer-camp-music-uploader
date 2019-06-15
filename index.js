@@ -13,8 +13,8 @@ const ProgressLogger = require('./services/ProgressLogger');
 const Student = require('./models/Student');
 const Song = require('./models/Song');
  
-const AWSConfigPath = './config.json';
-const bucketName = 'pere-lindsay-music-upload'
+const AWSConfigPath = './AWSconfig.json';
+const { bucketName } = require('./config.json');
 const htmlTemplatePath = './template.html';
 const htmlStorePath = './htmls';
 const emailsDataPath = './emails.csv';
@@ -120,7 +120,7 @@ class MusicUploader {
       endLog: '--- All songs have been uploaded to Amazon s3 ---'
     })
     return Promise.map(this.songs, (song, index) => {
-      return this.S3FileUploader.uploadFile(`${mp3FilesPath}/${song.hashedmp3SongName}`, song.hashedmp3SongName, 'audio', (progress) => {
+      return this.S3FileUploader.uploadFile(`${mp3FilesPath}/${song.hashedmp3SongName}`, song.hashedmp3SongName, 'audio', song.mp3SongName, (progress) => {
         songUploadProgressLogger.updateProgress(index, progress);
       });
     })
@@ -131,7 +131,7 @@ class MusicUploader {
         endLog: '--- All html pages have been uploaded to Amazon s3 ---'
       })
       return Promise.map(this.students, (student, index) => {
-        return this.S3FileUploader.uploadFile(`./htmls/${student.htmlPageName}`, student.htmlPageName, 'html', (progress) => {
+        return this.S3FileUploader.uploadFile(`./htmls/${student.htmlPageName}`, student.htmlPageName, 'html', null, (progress) => {
           htmlUploadProgressLogger.updateProgress(index, progress);
         });
       })
@@ -184,7 +184,6 @@ class MusicUploader {
       .then(() => this.requireApproval("Are you ready to send emails to all students?"))
       .then(() => this._sendEmailToStudents())
       .catch(console.log);
-
   }
 }
 

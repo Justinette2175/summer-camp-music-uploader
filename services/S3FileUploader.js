@@ -19,7 +19,7 @@ class S3FileUploader {
     }
   }
 
-  uploadFile(filePath, key, contentType, cb) {
+  uploadFile(filePath, key, contentType, name, cb) {
     if (this.bucketName && this.s3) {
       return fse.readFile(filePath).then((data) => {
         var base64data = new Buffer(data, 'binary');
@@ -28,6 +28,9 @@ class S3FileUploader {
           Key: key,
           Body: base64data,
           ContentType: this._getContentTypeMetadata(contentType),
+        }
+        if (name) {
+          params.ContentDisposition = `attachment; filename=${name};`;
         }
         return new Promise((resolve, reject) => {
           this.s3.upload(params)
