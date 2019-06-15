@@ -173,39 +173,17 @@ class MusicUploader {
 
   run () {
     return fse.readdir(wavFilesPath)
-      .then((items) => {
-        return this._createSongs(items);
-      })
-      .then(() => {
-        return this._addGlobalSongsToStudents();
-      })
-      // .then(() => {
-      //   return this.requireApproval("Are you ready to launch the song conversion to mp3?");
-      // })
-      // .then(() => {
-      //   return this._convertSongs()
-      // })
-      .then(() => {
-        return this._createHTMLPages();
-      })
-      // .then(() => {
-      //   return this.requireApproval("Are you ready to upload songs and html pages to Amazon S3?");
-      // })
-      // .then(() => {
-      //   return this._uploadFilesToS3();
-      // })
-      .then(() => {
-        return this.emailRetriever.addEmailsToStudents(this.students);
-      })
-      .then(() => {
-        return this.requireApproval("Are you ready to send emails to all students?");
-      })
-      .then(() => {
-        return this._sendEmailToStudents();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((items) => this._createSongs(items))
+      .then(() => this._addGlobalSongsToStudents())
+      .then(() => this.emailRetriever.addEmailsToStudents(this.students))
+      .then(() => this._createHTMLPages())
+      .then(() => this.requireApproval("Are you ready to launch the song conversion to mp3?"))
+      .then(() => this._convertSongs())
+      .then(() => this.requireApproval("Are you ready to upload songs and html pages to Amazon S3?"))
+      .then(() => this._uploadFilesToS3())
+      .then(() => this.requireApproval("Are you ready to send emails to all students?"))
+      .then(() => this._sendEmailToStudents())
+      .catch(console.log);
 
   }
 }
