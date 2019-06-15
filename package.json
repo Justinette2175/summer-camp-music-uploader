@@ -1,0 +1,25 @@
+{
+  "name": "music-uplaoder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.470.0",
+    "bluebird": "^3.5.5",
+    "cli-progress": "^2.1.1",
+    "csv-parser": "^2.3.0",
+    "fs-extra": "^8.0.1",
+    "google-spreadsheet": "^2.0.7",
+    "googleapis": "^39.2.0",
+    "inquirer": "^6.3.1",
+    "node-lame": "^1.2.0",
+    "request-promise": "^4.2.4",
+    "uuidv4": "^4.0.0"
+  }
+}

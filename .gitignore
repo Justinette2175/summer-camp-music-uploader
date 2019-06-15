@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+#Student Emails
+emails.csv
+
+#aws config
+config.json
+
+.DS_Store
+
+#folders
+wav/
+mp3/
+data/
+htmls/
