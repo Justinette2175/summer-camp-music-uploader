@@ -2,6 +2,7 @@ const AWS = require('aws-sdk')
 var Promise = require('bluebird');
 const fse = require('fs-extra');
 
+const ACCURACY_BALANCER = 20;
 class S3FileUploader {
   constructor(bucketName, configPath) {
     this.bucketName = bucketName;
@@ -18,7 +19,7 @@ class S3FileUploader {
     }
   }
 
-  uploadFile(filePath, key, contentType) {
+  uploadFile(filePath, key, contentType, cb) {
     if (this.bucketName && this.s3) {
       return fse.readFile(filePath).then((data) => {
         var base64data = new Buffer(data, 'binary');
@@ -26,10 +27,26 @@ class S3FileUploader {
           Bucket: this.bucketName,
           Key: key,
           Body: base64data,
-          'ContentType': this._getContentTypeMetadata(contentType),
+          ContentType: this._getContentTypeMetadata(contentType),
         }
-        this.s3.putObject(params, (err, data) => {
-          if (err) console.error(`Upload Error ${err}`)
+        return new Promise((resolve, reject) => {
+          this.s3.upload(params)
+            .on('httpUploadProgress', function (progress) {
+              if (progress) {
+                const percentageProgress = ((progress.loaded / progress.total) * 100) - ACCURACY_BALANCER;
+                cb(percentageProgress);
+              }
+            })
+            .send((err, data) => {
+              if (err) {
+                reject(err);
+              } else {
+                if (cb) {
+                  cb(100);
+                }
+                resolve(data);
+              }
+            });
         })
       })
     }

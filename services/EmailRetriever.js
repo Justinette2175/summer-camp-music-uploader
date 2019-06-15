@@ -1,6 +1,6 @@
 const fse = require('fs-extra');
 const csv = require('csv-parser');
-
+const Promise = require('bluebird');
 class EmailRetriever {
   constructor(emailDataPath){
     this.emailsDataPath = emailDataPath
@@ -11,6 +11,9 @@ class EmailRetriever {
     return new Promise((resolve, reject) => {
       fse.createReadStream(this.emailsDataPath)
         .pipe(csv())
+        .on('error', () => {
+          reject(new Error('There was an error loading data from your csv file'));
+        })
         .on('data', (data) => { results.push(data) })
         .on('end', () => {
           resolve(results);
@@ -31,22 +34,26 @@ class EmailRetriever {
       .then((emailData) => {
         const sortedEmailData = this._sortByObjectKey(emailData, 'fullName');
         const sortedStudents = this._sortByObjectKey(students, 'name');
-        const problemValues = [];
         sortedStudents.forEach((student) => {
           const studentIndex = sortedEmailData.findIndex((row) => {
             return row.fullName === student.name;
           })
           if (studentIndex > -1) {
             const data = sortedEmailData[studentIndex];
-            student.email = data.email;
-            student.firstName = data.firstName;
-            student.lastName = data.lastName;
-            emailData.splice(studentIndex, 1);
+            if (data.email) {
+              student.email = data.email;
+              student.firstName = data.firstName;
+              student.lastName = data.lastName;
+              emailData.splice(studentIndex, 1);
+            }
+            else {
+              return Promise.reject(new Error(`No email found in csv file for ${student.name}`))
+            }
           } else {
-            problemValues.push(student);
-            console.log('No email adress was found for student', student.name);
+            return Promise.reject(new Error(`No line entry found in csv file for ${student.name}`))
           }
         })
+        console.log("--- Emails have been retrieved for all students ---")
         return Promise.resolve();
       })
   }

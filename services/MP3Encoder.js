@@ -1,4 +1,5 @@
 const Lame = require("node-lame").Lame;
+const Promise = require('bluebird');
 class MP3Encoder {
   constructor(wavPath, mp3Path) {
     this.wavPath = wavPath;

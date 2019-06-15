@@ -11,7 +11,7 @@ class EmailService {
     this.SES = new AWS.SES({apiVersion: '2010-12-01'});
   }
 
-  sendEmail(student) {
+  sendEmail(student, cb) {
     if (student.email) {
       const params = {
         Destination: {
@@ -39,12 +39,18 @@ class EmailService {
         ],
       };
       if (this.SES) {
-        this.SES.sendEmail(params).promise()
-        .then((data) => {
-        }).catch((err) => {
-          console.error("There was a problem sending a message.", err, err.stack);
-        });
+        return this.SES.sendEmail(params).promise()
+          .then((data) => {
+            if (cb) {
+              cb(100);
+            }
+            return data;
+          }).catch((err) => {
+            console.error("There was a problem sending a message.", err, err.stack);
+          });
       }
+    } else {
+      return Promise.reject(new Error(`No email found for ${student.name}`))
     }
   }
 }

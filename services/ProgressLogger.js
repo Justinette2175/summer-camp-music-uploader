@@ -1,5 +1,5 @@
 const cliProgress = require('cli-progress');
-
+const Promise = require('bluebird');
 class ProgressLogger {
   constructor(arr, { startLog, endLog }) {
     this._startLog = startLog;

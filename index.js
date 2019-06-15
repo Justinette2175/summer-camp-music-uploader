@@ -1,5 +1,6 @@
-var Promise = require('bluebird');
+const Promise = require('bluebird');
 const fse = require('fs-extra');
+const inquirer = require('inquirer');
 
 const S3FileUploader = require('./services/S3FileUploader');
 const EmailRetriever = require('./services/EmailRetriever');
@@ -19,6 +20,7 @@ const htmlStorePath = './htmls';
 const emailsDataPath = './emails.csv';
 const mp3FilesPath = './mp3';
 const wavFilesPath = './wav';
+
 
 class MusicUploader {
   constructor() {
@@ -61,14 +63,19 @@ class MusicUploader {
         student.addSongToStudentSongs(file);
       })
     })
+    console.log('--- Global songs have been added to student files ---')
     return Promise.resolve();
   }
 
   _createSongs(songs) {
+    console.log("--- Creating song objects ---");
     return Promise.map(songs, (fileName) => {
       const song = this._createSong(fileName);
       this.addSongToStudent(song);
-    });
+    })
+    .then(() => {
+      console.log("--- Song objects have been created ---");
+    })
   }
 
   _createSong(fileName) {
@@ -108,14 +115,60 @@ class MusicUploader {
   }
 
   _uploadFilesToS3() {
-    Promise.map(this.songs, (song) => {
-      return this.S3FileUploader.uploadFile(`${mp3FilesPath}/${song.hashedmp3SongName}`, song.hashedmp3SongName, 'audio');
+    const songUploadProgressLogger = new ProgressLogger(this.songs, {
+      startLog: '--- Uploading songs to Amazon s3 ---', 
+      endLog: '--- All songs have been uploaded to Amazon s3 ---'
+    })
+    return Promise.map(this.songs, (song, index) => {
+      return this.S3FileUploader.uploadFile(`${mp3FilesPath}/${song.hashedmp3SongName}`, song.hashedmp3SongName, 'audio', (progress) => {
+        songUploadProgressLogger.updateProgress(index, progress);
+      });
     })
     .then(() => {
-      return Promise.map(this.students, (student) => {
-        return this.S3FileUploader.uploadFile(`./htmls/${student.htmlPageName}`, student.htmlPageName, 'html');
+      songUploadProgressLogger.endProgress();
+      const htmlUploadProgressLogger = new ProgressLogger(this.students, {
+        startLog: '--- Uploading html pages to Amazon s3 ---', 
+        endLog: '--- All html pages have been uploaded to Amazon s3 ---'
+      })
+      return Promise.map(this.students, (student, index) => {
+        return this.S3FileUploader.uploadFile(`./htmls/${student.htmlPageName}`, student.htmlPageName, 'html', (progress) => {
+          htmlUploadProgressLogger.updateProgress(index, progress);
+        });
+      })
+      .then(() => {
+        htmlUploadProgressLogger.endProgress();
       })
     })
+  }
+
+  requireApproval(message, action) {
+    const options = {
+      message,
+      type: 'confirm', 
+      name: 'prompt',
+    }
+    return inquirer.prompt([options])
+      .then((answers) => {
+        if (answers.prompt === true) {
+          return Promise.resolve();
+        }
+        return Promise.reject(new Error("Song conversion aborted"));
+    })
+  }
+
+  _sendEmailToStudents() {
+    const emailSendingProgressLogger = new ProgressLogger(this.students, {
+      startLog: '--- Sending emails to students ---', 
+      endLog: '--- All emails have been sent ---'
+    })
+    return Promise.map(this.students, (student, index) => {
+      return this.emailService.sendEmail(student, (progress) => {
+        emailSendingProgressLogger.updateProgress(index, progress);
+      });
+    })
+      .then(() => {
+        emailSendingProgressLogger.endProgress();
+      })
   }
 
   run () {
@@ -126,26 +179,34 @@ class MusicUploader {
       .then(() => {
         return this._addGlobalSongsToStudents();
       })
-      .then(() => {
-        return this._convertSongs()
-      })
-      .catch((error) => {
-          console.log(error);
-      })
+      // .then(() => {
+      //   return this.requireApproval("Are you ready to launch the song conversion to mp3?");
+      // })
+      // .then(() => {
+      //   return this._convertSongs()
+      // })
       .then(() => {
         return this._createHTMLPages();
       })
-      .then(() => {
-        return this._uploadFilesToS3();
-      })
+      // .then(() => {
+      //   return this.requireApproval("Are you ready to upload songs and html pages to Amazon S3?");
+      // })
+      // .then(() => {
+      //   return this._uploadFilesToS3();
+      // })
       .then(() => {
         return this.emailRetriever.addEmailsToStudents(this.students);
       })
       .then(() => {
-        return Promise.map(this.students, (student) => {
-          this.emailService.sendEmail(student);
-        })
+        return this.requireApproval("Are you ready to send emails to all students?");
+      })
+      .then(() => {
+        return this._sendEmailToStudents();
+      })
+      .catch((error) => {
+        console.log(error);
       });
+
   }
 }
 
