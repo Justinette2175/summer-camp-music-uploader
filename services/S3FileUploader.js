@@ -13,7 +13,7 @@ class S3FileUploader {
   _getContentTypeMetadata(contentType) {
     switch (contentType) {
       case 'html': 
-        return 'text/html'
+        return 'text/html;charset=utf-8'
       default: 
         return 'application/octet-stream'
     }

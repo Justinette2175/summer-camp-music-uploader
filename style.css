@@ -1,0 +1,30 @@
+body{
+  background-color: black;
+  background-image:url('http://campmusicalperelindsay.com/wp-content/uploads/2015/08/beautiful.png');
+  color:white;
+  padding: 30px;
+}
+
+p, a, h1, h2, h3{
+  font-family: 'Nunito', sans-serif;
+}
+
+ul{
+  list-style: none;
+  background-color: black;
+  border-radius: 4px;
+  padding: 15px;
+  max-width: 400px;
+}
+
+li{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  display:flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+}
+
+a {
+  color: white;
+  text-decoration: none; /* no underline */
+}

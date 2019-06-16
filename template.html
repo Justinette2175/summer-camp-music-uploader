@@ -2,11 +2,100 @@
 <!doctype html>
 <html>
 <head>
-<title>Our Funky HTML Page</title>
-<meta name="description" content="Our first page">
-<meta name="keywords" content="html tutorial template">
+<title>Téléchargement de musique - Camp musical Père Lindsay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap" rel="stylesheet">
+<script src="https://use.fontawesome.com/4d2511803c.js"></script>
+<style>
+  body{
+    background-color: black;
+    background:url('http://campmusicalperelindsay.com/wp-content/uploads/2015/08/beautiful.png') no-repeat center center fixed;
+    color:rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    background-size: cover;
+  }
+  html, body, div, p, a, h1, h2, h3, span{
+    box-sizing: border-box;
+  }
+  p, a, h1, h2, h3, span{
+    font-family: 'Nunito', sans-serif;
+  }
+  p{
+    margin: 5px 0px;
+    max-width:400px;
+    font-size: .95rem;
+  }
+  .song-title{
+    min-width:300px;
+  }
+  .logo{
+    width: 100px;
+  }
+  .plc{
+    background-color: rgba(0,0,0,0.9);
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 30px;
+    border-radius: 10px;
+  }
+  ul{
+    padding: 0;
+    margin-top: 15px;
+    list-style: none;
+  }
+  li{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    display:flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    flex-wrap: wrap;
+    align-items:center;
+  }
+  li:last-child{
+    border-bottom: none;
+  }
+  a {
+    color:rgba(255, 255, 255, 0.9);
+    text-decoration: none; /* no underline */
+  }
+  .download{
+    background-color: #83BC1E;
+    padding: 3px 10px;
+    border-radius: 15px;
+    transition:.25s;
+    font-size: .85rem;
+    max-height: 30px;
+    display: flex;
+    align-items: center;
+  }
+  .download:visited{
+    background-color: #9F9F9F !important;
+  }
+  .download:hover{
+    background-color: #186C2B;
+    cursor: pointer;
+  }
+  .download>i{
+    margin-right: 5px;
+  }
+  .actions{
+    display:flex;
+  }
+  audio{
+    width:100px;
+  }
+  @media screen and (max-width: 508px) {
+    .download{
+      margin-top: 5px;
+    }
+    .plc{
+      padding: 15px;
+    }
+  }
+</style>
 </head>
 <body>
-  <div>placeholder</div>
+  <header><img class="logo" src="https://pere-lindsay-music-upload.s3.amazonaws.com/cmpl-logo.png" alt="Logo du camp musical, un enfant jouant de la flute."/></header>
+  <div class="plc">placeholder</div>
 </body>
 </html>

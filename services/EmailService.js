@@ -2,8 +2,7 @@ const AWS = require('aws-sdk')
 var Promise = require('bluebird');
 const fse = require('fs-extra');
 
-const S3BucketPath = "https://pere-lindsay-music-upload.s3.amazonaws.com";
-const SOURCE_EMAIL = 'jugagnepain75@gmail.com';
+const { senderEmail, bucketUrl } = require('../config.json');
 
 class EmailService {
   constructor(configPath) {
@@ -24,7 +23,7 @@ class EmailService {
             Html: {
               Charset: "UTF-8",
               Data: `<h3>Bonjour ${student.firstName || student.name}!</h3>
-                <p>Ton téléchargement est prêt. Clique sur <a href=${S3BucketPath}/${student.htmlPageName}>ce lien</a> pour écouter tes chansons.</p>
+                <p>Ton téléchargement est prêt. Clique sur <a href=${bucketUrl}${student.htmlPageName}>ce lien</a> pour écouter tes chansons.</p>
               `
             },
            },
@@ -33,9 +32,9 @@ class EmailService {
               Data: 'Tes chansons sont prêtes à être téléchargées!'
             }
           },
-        Source: SOURCE_EMAIL, 
+        Source: senderEmail, 
         ReplyToAddresses: [
-          SOURCE_EMAIL,
+          senderEmail,
         ],
       };
       if (this.SES) {

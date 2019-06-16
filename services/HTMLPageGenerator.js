@@ -2,6 +2,7 @@ const Toolbox = require('./Toolbox');
 
 var Promise = require('bluebird');
 const fse = require('fs-extra');
+const { bucketUrl } = require("../config.json");
 
 class HTMLPageGenerator {
   constructor(templatePath, htmlStorePath) {
@@ -11,20 +12,32 @@ class HTMLPageGenerator {
 
   _generateSongsList(songs) {
     return songs.map((song) => {
-      return `<li><a href="https://pere-lindsay-music-upload.s3.amazonaws.com/${song.hashedmp3SongName}">${song.title}</a></li>`
-    }).toString().replace(',', ' ');
+      const url = `${ bucketUrl }${ song.hashedmp3SongName }`;
+      return (
+        `<li>
+          <p class="song-title">${song.title}</p>
+          <div class="actions">
+            <a class="download" href="${url}">
+              <i class="fa fa-download"></i>
+              Télécharger
+            </a>
+          </div>
+        </li>`
+      )
+    }).join(' ');
   }
 
   _generateHTMLMarkup(studentName, songs) {
     return fse.readFile(this.templatePath, 'utf8')
       .then((template) => {
         const blankPage = template;
-        const newHtml = `<div className="test-div">
-          <p>${studentName}<p>
+        const newHtml = `
+          <h1>Bonjour ${studentName},</h1>
+          <p>Tes enregistrements sont prêts à être téléchargés. Clique chacun des liens ci-dessous.</p>
           <ul> 
             ${this._generateSongsList(songs)}
           </ul>
-        </div>`
+        `
         return Promise.resolve(blankPage.replace(/placeholder/g, newHtml));
     })
   }
@@ -34,7 +47,8 @@ class HTMLPageGenerator {
   }
 
   createStudentPage(student) {
-    return this._generateHTMLMarkup(student.name, student.songs)
+    const name = student.firstName || student.name;
+    return this._generateHTMLMarkup(name, student.songs)
       .then((markup) => {
         return this._writeHTMLPageToDisk(student.htmlPageName, markup)
         .then(() => {
