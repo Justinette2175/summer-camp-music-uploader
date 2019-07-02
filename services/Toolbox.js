@@ -3,8 +3,8 @@ const { salt } = require('../config.json');
 
 class Toolbox {
   getStudentNamesFromTitle(title) {
-    const studentNames = title.split('-')[0];
-    return studentNames.split('|');
+    const studentNames = title.split('--')[0];
+    return studentNames.split('_');
   }
 
   getSongTitleFromFileName(fileName) {

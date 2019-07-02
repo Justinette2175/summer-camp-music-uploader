@@ -47,6 +47,18 @@ The `AWSconfig.json` file should be in the following format. Obtain these creden
 }
 ```
 
+Place the .wav files in the `/wav` folder, and name them according to this nomenclature: 
+`<student name>_<other student name>--<song title>.wav`. 
+Name songs that are accessible to all students like so: 
+`*--<song title>.wav`.
+
+Fill out the `emails.csv` file like so: 
+```
+fullName,email,firstName,lastName
+<full name (as in song name)>,<email>,<first name>,<last name>
+Julio Smith,julio@email.com,Julio,Smith
+```
+
 ```bash
 npm install # Install
 node index.js # Run the application
