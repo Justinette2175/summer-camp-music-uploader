@@ -177,7 +177,10 @@ class MusicUploader {
       .then(() => this._addGlobalSongsToStudents())
       .then(() => this.emailRetriever.addEmailsToStudents(this.students))
       .then(() => this._createHTMLPages())
-      .then(() => this.requireApproval("Are you ready to launch the song conversion to mp3?"))
+      .then(() => {
+        Toolbox.logStudentsTable(this.students);
+        return this.requireApproval("Are you ready to launch the song conversion to mp3?")
+      })
       .then(() => this._convertSongs())
       .then(() => this.requireApproval("Are you ready to upload songs and html pages to Amazon S3?"))
       .then(() => this._uploadFilesToS3())
