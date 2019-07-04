@@ -32,7 +32,7 @@ class HTMLPageGenerator {
           <div class="content-box">
             <div class="content-header">
               <h1>Bonjour ${studentName}</h1>
-              <p>Tes enregistrements sont prêts à être téléchargés. Clique chacun des liens ci-dessous.</p>
+              <p>Ces enregistrements sont prêts à être téléchargés. Bonne écoute!</p>
               <button class="download-all" onClick="downloadAll();">Tout télécharger <i class="fa fa-download"></i></button>
             </div>
             <ul> 

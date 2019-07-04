@@ -32,7 +32,7 @@ class Song {
   }
 
   get students() {
-    return Toolbox.getStudentNamesFromTitle(this.title);
+    return Toolbox.getStudentNamesFromFileName(this._fileName);
   }
 
   get metadata() {

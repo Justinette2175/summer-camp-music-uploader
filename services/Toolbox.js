@@ -3,13 +3,23 @@ const { salt } = require('../config.json');
 const Table = require('cli-table');
 
 class Toolbox {
-  getStudentNamesFromTitle(title) {
+  getStudentNamesFromFileName(fileName) {
+    const title = fileName.split('.')[0];
     const studentNames = title.split('--')[0];
     return studentNames.split('_');
   }
 
   getSongTitleFromFileName(fileName) {
-    return fileName.split('.')[0]
+    const noExtension = fileName.split('.')[0];
+    const originalTitle = noExtension.split('--')[1];
+    const students = this.getStudentNamesFromFileName(fileName);
+    let title;
+    if (students[0] === '*') {
+      title = originalTitle;
+    } else {
+      title = "Marathon 2019: " + students.join(', ') + ' ' + originalTitle;
+    }
+    return title;
   }
 
   generateUuid(fileName) {
