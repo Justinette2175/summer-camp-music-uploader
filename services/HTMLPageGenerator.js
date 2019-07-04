@@ -15,14 +15,11 @@ class HTMLPageGenerator {
       const url = `${ bucketUrl }${ song.hashedmp3SongName }`;
       return (
         `<li>
-          <p class="song-title">${song.title}</p>
-          <div class="actions">
-            <a class="download" href="${url}">
-              <i class="fa fa-download"></i>
-              Télécharger
-            </a>
-          </div>
-        </li>`
+        <a class="song-link" href="${url}">
+          <span class="song-title">${song.title}</span>
+          <span class="download"><i class="fa fa-download"></i></span>
+        </a>
+      </li>`
       )
     }).join(' ');
   }
@@ -32,11 +29,16 @@ class HTMLPageGenerator {
       .then((template) => {
         const blankPage = template;
         const newHtml = `
-          <h1>Bonjour ${studentName},</h1>
-          <p>Tes enregistrements sont prêts à être téléchargés. Clique chacun des liens ci-dessous.</p>
-          <ul> 
-            ${this._generateSongsList(songs)}
-          </ul>
+          <div class="content-box">
+            <div class="content-header">
+              <h1>Bonjour ${studentName}</h1>
+              <p>Tes enregistrements sont prêts à être téléchargés. Clique chacun des liens ci-dessous.</p>
+              <button class="download-all" onClick="downloadAll();">Tout télécharger <i class="fa fa-download"></i></button>
+            </div>
+            <ul> 
+              ${this._generateSongsList(songs)}
+            </ul>
+          </div>
         `
         return Promise.resolve(blankPage.replace(/placeholder/g, newHtml));
     })

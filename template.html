@@ -4,76 +4,134 @@
 <head>
 <title>Téléchargement de musique - Camp musical Père Lindsay</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css?family=Chivo:400&display=swap" rel="stylesheet"> 
 <script src="https://use.fontawesome.com/4d2511803c.js"></script>
 <style>
+  *{
+    box-sizing: border-box;
+  }
   body{
-    background-color: black;
-    background:url('http://campmusicalperelindsay.com/wp-content/uploads/2015/08/beautiful.png') no-repeat center center fixed;
-    color:rgba(255, 255, 255, 0.9);
-    padding: 15px;
+    background-color:#f8f8db;
     background-size: cover;
+    margin: 0px;
+    padding: 0px;
+  }
+  .background-image{
+    position:fixed;
+    top: 0;
+    bottom: 0; 
+    left: 0;
+    right: 0;
+    background-image:url('https://campmusicalperelindsay.s3.amazonaws.com/cmpl-bg.png');
+    background-size:cover;
+    background-position: 0 60%;
   }
   html, body, div, p, a, h1, h2, h3, span{
     box-sizing: border-box;
   }
   p, a, h1, h2, h3, span{
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Chivo', sans-serif;
+    color: #3f43ed;
+  }
+  h1{
+    font-size: 1.5rem;
   }
   p{
     margin: 5px 0px;
     max-width:400px;
-    font-size: .95rem;
+    font-size: 1rem;
+    line-height: 1.4rem;
   }
-  .song-title{
-    min-width:300px;
+  header{
+    position:fixed;
   }
   .logo{
     width: 100px;
   }
   .plc{
-    background-color: rgba(0,0,0,0.9);
-    max-width: 600px;
-    margin: 15px auto;
-    padding: 30px;
-    border-radius: 10px;
+    position:relative;
+    z-index:10;
+    display: flex;
+    justify-content: flex-end;
+    padding: 60px 100px;
+    width:100vw;
+  }
+  .content-box{
+    max-width: 500px;
+    width:100%;
+    margin-top: 60px;
+  }
+  .content-header{
+    margin-left: 40px;
+    margin-bottom : 40px;
+    max-width:270px;
+    text-shadow: 3px 2px 5px #f8f8db;
+  }
+  .download-all{
+    margin-top: 20px;
+    border-radius: 30px;
+    padding: 7px 15px;
+    background-color: #3e4fd1;
+    color: white;
+    border:none;
+    font-size: 1rem;
+  }
+  .download-all>i{
+    margin-left: 10px;
+  }
+  .download-all:hover{
+    background-color: #61fff9;
+    cursor: pointer;
+    color: #3e4fd1;
   }
   ul{
-    padding: 0;
+    padding: 10px 30px;
     margin-top: 15px;
     list-style: none;
+    background-color: white;
+    box-shadow: 3px 3px 7px 0px rgba(25, 26, 93, 0.29);
+    max-height: 300px;
+    overflow: auto;
   }
   li{
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid #3e4fd1;
     display:flex;
     justify-content: space-between;
-    padding: 8px 10px;
+    padding: 20px 10px;
     flex-wrap: wrap;
     align-items:center;
   }
   li:last-child{
     border-bottom: none;
   }
-  a {
-    color:rgba(255, 255, 255, 0.9);
+  a{
     text-decoration: none; /* no underline */
+    display:inline-block;
+  }
+  .song-link{
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+    width:100%;
+  }
+  .song-link:hover{
+    cursor: pointer;
+  }
+  .song-link:hover .download{
+    color: #3e4fd1;
+  }
+  .song-title{
+    border-bottom: 1px solid #3e4fd1;
   }
   .download{
-    background-color: #83BC1E;
     padding: 3px 10px;
-    border-radius: 15px;
     transition:.25s;
-    font-size: .85rem;
+    font-size: 1.5rem;
     max-height: 30px;
     display: flex;
     align-items: center;
-  }
-  .download:visited{
-    background-color: #9F9F9F !important;
-  }
-  .download:hover{
-    background-color: #186C2B;
-    cursor: pointer;
+    color: #61fff9;
   }
   .download>i{
     margin-right: 5px;
@@ -84,18 +142,51 @@
   audio{
     width:100px;
   }
-  @media screen and (max-width: 508px) {
-    .download{
-      margin-top: 5px;
-    }
+  @media screen and (max-width: 597px) {
     .plc{
-      padding: 15px;
+      padding: 60px 30px;
+    }
+  }
+  @media screen and (max-width: 508px) {
+    .plc{
+      padding: 60px 15px;
+    }
+    ul{
+      padding: 10px 20px;
+      max-height: 18000px;
+    }
+    .content-header{
+      margin-left: 20px;
     }
   }
 </style>
 </head>
 <body>
+  <div class="background-image"></div>
   <header><img class="logo" src="https://campmusicalperelindsay.s3.amazonaws.com/cmpl-logo.png" alt="Logo du camp musical, un enfant jouant de la flute."/></header>
-  <div class="plc">placeholder</div>
+  <div class="plc">
+    placeholder
+  </div>
+  <script src="https://campmusicalperelindsay.s3.amazonaws.com/jszip.min.js" type="text/javascript"></script>
+  <script>
+    function simulateClick(elem) {
+      var evt = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      var canceled = !elem.dispatchEvent(evt);
+    };
+    function downloadAll() {
+      var songLinks = document.getElementsByClassName('song-link');
+      var sleep=0;
+      Array.prototype.forEach.call(songLinks, function(el, index, array){
+        setTimeout(function() {
+          simulateClick(el);
+      }, sleep);
+      sleep += 1000;
+      });
+    }
+  </script>
 </body>
 </html>
