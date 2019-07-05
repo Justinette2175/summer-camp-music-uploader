@@ -16,7 +16,17 @@ class Song {
   }
 
   get title() {
-    return Toolbox.getSongTitleFromFileName(this._fileName);
+    const { fileName } = this;
+    const noExtension = fileName.split('.')[0];
+    const originalTitle = noExtension.split('--')[1];
+    const students = Toolbox.getStudentNamesFromFileName(fileName);
+    let title;
+    if (students[0] === '*') {
+      title = originalTitle;
+    } else {
+      title = "Marathon 2019: " + students.join(', ') + ' ' + originalTitle;
+    }
+    return title;
   }
 
   get hashedWavSongName() {
@@ -24,9 +34,9 @@ class Song {
   }
 
   get mp3SongName() {
-    return this.title + '.mp3';
+    return this.title.replace(/\s/g,'').replace(/[,]+/g, "").replace(/[:]+/g, "-") + '.mp3';
   }
-  
+
   get hashedmp3SongName() {
     return this._uuid + '.mp3';
   }

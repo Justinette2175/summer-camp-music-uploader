@@ -24,12 +24,9 @@ class EmailService {
               Charset: "UTF-8",
               Data: `<h3>Bonjour ${student.firstName || student.name}!</h3>
                 <p>Voici les enregistrements de la première session 2019 du cmpl! <a href=${bucketUrl}${student.htmlPageName}>Ce lien</a> ouvrira une page contenant les pièces de chorale, d'orchestre, de différents ensembles et du marathon.</p>
-                <br/>
                 <p>Il est conseillé de tout télécharger le plus rapidement possible! Ceci dit, le lien restera actif jusqu'à l'été prochain.</p>
-                <br/>
                 <p>Pour tous problèmes ou commentaires, merci d'écrire sans hésiter à cette adresse:</p>
                 <p>cmpl.enregistrement@gmail.com</p>
-                <br/>
                 <p>Bonne fin d'été!</p>
                 <br/>
                 <p>Nataq Huault</p>

@@ -120,7 +120,7 @@ class MusicUploader {
       endLog: '--- All songs have been uploaded to Amazon s3 ---'
     })
     return Promise.map(this.songs, (song, index) => {
-      return this.S3FileUploader.uploadFile(`${mp3FilesPath}/${song.hashedmp3SongName}`, song.hashedmp3SongName, 'audio', song.mp3SongName, (progress) => {
+      return this.S3FileUploader.uploadFile(`${mp3FilesPath}/${song.hashedmp3SongName}`, song.hashedmp3SongName, null, song.mp3SongName, (progress) => {
         songUploadProgressLogger.updateProgress(index, progress);
       });
     })
