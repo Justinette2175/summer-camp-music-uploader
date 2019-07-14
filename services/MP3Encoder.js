@@ -10,7 +10,7 @@ class MP3Encoder {
     const meta = song.metadata;
     const encoder = new Lame({
       output: `${this.mp3Path}/${song.hashedmp3SongName}`,
-      bitrate: 192, 
+      bitrate: 320, 
       meta,
     }).setFile(`${this.wavPath}/${song.fileName}`);
     const emitter = encoder.getEmitter();
