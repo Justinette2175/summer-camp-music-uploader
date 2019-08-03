@@ -12,6 +12,7 @@ emails.csv
 #config and secrets
 AWSconfig.json
 config.json
+AWSconfigS3.json
 
 .DS_Store
 
