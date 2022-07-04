@@ -14,7 +14,6 @@ const Student = require('./models/Student');
 const Song = require('./models/Song');
  
 const AWSConfigPath = './AWSconfig.json';
-const AWSConfigS3Path = './AWSconfigS3.json';
 const { bucketName } = require('./config.json');
 const htmlTemplatePath = './template.html';
 const htmlStorePath = './htmls';
@@ -30,7 +29,7 @@ class MusicUploader {
     this.songs = [];
     this.MP3Encoder = new MP3Encoder(wavFilesPath, mp3FilesPath);
     this.emailService = new EmailService(AWSConfigPath);
-    this.S3FileUploader = new S3FileUploader(bucketName, AWSConfigS3Path);
+    this.S3FileUploader = new S3FileUploader(bucketName, AWSConfigPath);
     this.emailRetriever = new EmailRetriever(emailsDataPath);
     this.HTMLPageGenerator = new HTMLPageGenerator(htmlTemplatePath, htmlStorePath); 
   }

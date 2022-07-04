@@ -1,6 +1,6 @@
-const AWS = require('aws-sdk')
-var Promise = require('bluebird');
-const fse = require('fs-extra');
+const AWS = require("aws-sdk");
+var Promise = require("bluebird");
+const fse = require("fs-extra");
 
 const ACCURACY_BALANCER = 20;
 class S3FileUploader {
@@ -12,31 +12,33 @@ class S3FileUploader {
 
   _getContentTypeMetadata(contentType) {
     switch (contentType) {
-      case 'html': 
-        return 'text/html;charset=utf-8'
-      default: 
-        return 'application/octet-stream'
+      case "html":
+        return "text/html;charset=utf-8";
+      default:
+        return "application/octet-stream";
     }
   }
 
   uploadFile(filePath, key, contentType, name, cb) {
     if (this.bucketName && this.s3) {
       return fse.readFile(filePath).then((data) => {
-        var base64data = new Buffer(data, 'binary');
+        var base64data = new Buffer(data, "binary");
         var params = {
           Bucket: this.bucketName,
           Key: key,
           Body: base64data,
           ContentType: this._getContentTypeMetadata(contentType),
-        }
+        };
         if (name) {
           params.ContentDisposition = `attachment; filename=${name};`;
         }
         return new Promise((resolve, reject) => {
-          this.s3.upload(params)
-            .on('httpUploadProgress', function (progress) {
+          this.s3
+            .upload(params)
+            .on("httpUploadProgress", function (progress) {
               if (progress) {
-                const percentageProgress = ((progress.loaded / progress.total) * 100) - ACCURACY_BALANCER;
+                const percentageProgress =
+                  (progress.loaded / progress.total) * 100 - ACCURACY_BALANCER;
                 cb(percentageProgress);
               }
             })
@@ -50,8 +52,8 @@ class S3FileUploader {
                 resolve(data);
               }
             });
-        })
-      })
+        });
+      });
     }
   }
 }
